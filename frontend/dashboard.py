@@ -4,6 +4,7 @@ import os
 import time
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
 from datetime import datetime
 
 from backend.store import MarketStore
@@ -109,10 +110,16 @@ def render_dashboard():
     st.subheader("Mid Price History")
 
     if len(snapshot['mid_prices']) > 0:
-        chart_df = pd.DataFrame({
-            'Mid Price': snapshot['mid_prices']
-        })
-        st.line_chart(chart_df, use_container_width=True)
+        # Use matplotlib to create the chart
+        fig, ax = plt.subplots(figsize=(10, 4))
+        ax.plot(snapshot['mid_prices'], color='#1f77b4', linewidth=2)
+        ax.set_xlabel('Data Points')
+        ax.set_ylabel('Mid Price ($)')
+        ax.grid(True, alpha=0.3)
+        ax.set_facecolor('#f0f2f6')
+        fig.tight_layout()
+        st.pyplot(fig)
+        plt.close(fig)
     else:
         st.info("Building chart... waiting for more data points.")
 
