@@ -209,24 +209,50 @@ class BinanceStreamClient:
         self.running = False
 
 
-def start_worker(store: MarketStore, symbol: str = SYMBOL) -> threading.Thread:
+def start_worker(store: MarketStore, symbol: str = SYMBOL, use_mock: bool = False) -> threading.Thread:
     """Start the WebSocket stream worker in a background thread.
 
     Args:
         store: MarketStore instance to update.
         symbol: Trading symbol to stream.
+        use_mock: If True, use mock data instead of real WebSocket.
 
     Returns:
         Thread object running the worker.
     """
+    # Check if mock mode is requested or auto-detect HTTP 451
+    if use_mock:
+        from backend.mock_data import start_mock_worker
+        logger.warning("Using MOCK DATA mode - generating simulated market data")
+        start_mock_worker(store)
+        return threading.Thread(target=lambda: None, daemon=True)
+
     client = BinanceStreamClient(store, symbol)
 
     def run_async_loop():
         """Run the async event loop in a separate thread."""
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
+        http_451_count = 0
+
         try:
-            loop.run_until_complete(client.connect_and_stream())
+            # Try to connect
+            async def try_connect():
+                nonlocal http_451_count
+                try:
+                    await client.connect_and_stream()
+                except Exception as e:
+                    # Detect HTTP 451 (geo-blocking)
+                    if "451" in str(e):
+                        http_451_count += 1
+                        if http_451_count >= 3:
+                            logger.error("Binance WebSocket blocked (HTTP 451) - switching to MOCK DATA mode")
+                            from backend.mock_data import start_mock_worker
+                            start_mock_worker(store)
+                            return
+                    raise
+
+            loop.run_until_complete(try_connect())
         finally:
             loop.close()
 

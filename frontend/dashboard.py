@@ -1,5 +1,6 @@
 """Streamlit dashboard for real-time market data visualization."""
 
+import os
 import time
 import streamlit as st
 import pandas as pd
@@ -19,9 +20,17 @@ st.set_page_config(
 
 # Initialize session state
 if 'store' not in st.session_state:
+    # Check if mock mode is requested via environment variable
+    use_mock = os.getenv('USE_MOCK_DATA', 'false').lower() in ('true', '1', 'yes')
+
     st.session_state.store = MarketStore(max_metrics=1000, max_trades=50)
-    st.session_state.worker_thread = start_worker(st.session_state.store, symbol="btcusdt")
+    st.session_state.worker_thread = start_worker(
+        st.session_state.store,
+        symbol="btcusdt",
+        use_mock=use_mock
+    )
     st.session_state.start_time = time.time()
+    st.session_state.is_mock_mode = use_mock
 
 store = st.session_state.store
 
@@ -37,7 +46,13 @@ def render_dashboard():
     """Render the main dashboard."""
 
     st.title("📈 Real-Time Market Data Streamer")
-    st.caption(f"Live data from Binance - BTCUSDT")
+
+    # Show data source
+    if st.session_state.get('is_mock_mode', False):
+        st.caption("🎲 DEMO MODE - Showing simulated market data for BTCUSDT")
+        st.warning("⚠️ Binance WebSocket is not available in your region (HTTP 451). Using mock data for demonstration.", icon="⚠️")
+    else:
+        st.caption("Live data from Binance - BTCUSDT")
 
     # Get current snapshot
     snapshot = store.snapshot()

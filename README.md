@@ -33,10 +33,15 @@ pip install -r requirements.txt
 
 # 4. Run the dashboard
 ./run.sh
-# Or manually: streamlit run app/dashboard.py
+# Or manually: streamlit run frontend/dashboard.py
+
+# If Binance is blocked in your region (HTTP 451 error):
+./run_mock.sh  # Uses simulated data for demonstration
 ```
 
 The dashboard will automatically open in your browser at `http://localhost:8501`.
+
+**Note:** If you see HTTP 451 errors, Binance WebSocket is geo-blocked in your location. Use `./run_mock.sh` to run with simulated data instead.
 
 ### Running Tests
 
@@ -162,12 +167,25 @@ Smoke tests for message parsing logic. Validates that depth and trade messages a
 
 ## Troubleshooting
 
-### No data appearing after 30+ seconds
+### No data appearing after 30+ seconds / HTTP 451 Errors
 
-1. **Check internet connection**: The app requires access to `stream.binance.com`
-2. **Check logs**: Look for connection errors in the terminal
-3. **Firewall/VPN**: Some networks block WebSocket connections
-4. **Binance availability**: Verify Binance API is not under maintenance
+**Issue**: You see repeating "HTTP 451" errors in the logs.
+
+**Cause**: Binance WebSocket API is geo-blocked in your region (HTTP 451 = "Unavailable For Legal Reasons").
+
+**Solutions**:
+1. **Use Mock Data Mode** (Recommended):
+   ```bash
+   ./run_mock.sh
+   ```
+   This runs the dashboard with simulated market data that behaves like real data.
+
+2. **Use a VPN**: Connect to a region where Binance is accessible
+
+3. **Other checks**:
+   - Check internet connection
+   - Check firewall/network restrictions
+   - Verify Binance API is not under maintenance
 
 ### Dashboard not updating
 
