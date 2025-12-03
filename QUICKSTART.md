@@ -29,6 +29,8 @@ pip install "altair<6,>=4.0"
 
 ## Run the Application
 
+### Option 1: Live Binance Data (if available in your region)
+
 ```bash
 # Make sure you're in the project root with venv activated
 ./run.sh
@@ -38,7 +40,22 @@ export PYTHONPATH="$(pwd)"
 streamlit run frontend/dashboard.py
 ```
 
+### Option 2: Mock Data Mode (if Binance is blocked)
+
+If you see HTTP 451 errors, Binance is geo-blocked in your region. Use mock data instead:
+
+```bash
+./run_mock.sh
+
+# Or manually:
+export PYTHONPATH="$(pwd)"
+export USE_MOCK_DATA=true
+streamlit run frontend/dashboard.py
+```
+
 The dashboard will open in your browser at `http://localhost:8501`.
+
+**Mock mode** generates realistic simulated market data that updates in real-time, perfect for demonstration and testing.
 
 ## What You Should See
 
