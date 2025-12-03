@@ -110,10 +110,9 @@ def render_dashboard():
 
     if len(snapshot['mid_prices']) > 0:
         chart_df = pd.DataFrame({
-            'Time': [datetime.fromtimestamp(ts) for ts in snapshot['timestamps']],
             'Mid Price': snapshot['mid_prices']
         })
-        st.line_chart(chart_df.set_index('Time'), use_container_width=True)
+        st.line_chart(chart_df, use_container_width=True)
     else:
         st.info("Building chart... waiting for more data points.")
 
