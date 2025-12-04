@@ -1,0 +1,71 @@
+/* OrderBook styles */
+
+.order-book {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.order-book h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #1f2937;
+  font-size: 1.25rem;
+}
+
+.order-book-empty {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.order-book-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.order-book-table thead {
+  background-color: #f9fafb;
+}
+
+.order-book-table th {
+  padding: 10px;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.order-book-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.order-book-bid {
+  background-color: #f0fdf4;
+}
+
+.order-book-bid:hover {
+  background-color: #dcfce7;
+}
+
+.order-book-ask {
+  background-color: #fef2f2;
+}
+
+.order-book-ask:hover {
+  background-color: #fee2e2;
+}
+
+.order-book-separator td {
+  padding: 4px;
+  border: none;
+}
+
+.separator-line {
+  height: 2px;
+  background: linear-gradient(to right, #e5e7eb 0%, #9ca3af 50%, #e5e7eb 100%);
+}
